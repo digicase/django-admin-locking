@@ -1,6 +1,7 @@
 /* Change List */
 .locking-status.locked,
 .locking-status.editing {
+    display: block;
     width: 14px;
     height: 14px;
     background: transparent url('../img/icons.svg') no-repeat 0 0;
