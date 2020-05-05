@@ -112,14 +112,15 @@
     $.extend(LockingAdminForm.prototype, {
         getWarningHtml: function() {
             var self = this;
-            return '<ul class="messagelist grp-messagelist">' +
-                        '<li class="error grp-error" id="locking-warning">' +
-                            self.formIsLockedByText + ' <span class="locking-locked-by"></span>' +
-                            '<a id="locking-take-lock" class="button grp-button rounded-button" onclick="window.locking.lockingFormInstance.takeLock()">' +
-                                self.takeLockText +
-                            '</a>' +
-                        '</li>' +
-                     '</ul>'
+            return (
+                '<li class="error grp-warning" id="locking-warning">' +
+                self.formIsLockedByText +
+                ' <span class="locking-locked-by"></span>' +
+                '. <a id="locking-take-lock" onclick="window.locking.lockingFormInstance.takeLock()">' +
+                self.takeLockText +
+                '</a>.' +
+                '</li>'
+            );
         },
         lockedBy: {
             setUp: function (data) {
@@ -138,7 +139,13 @@
                 $('.deletelink').css({'cursor': 'not-allowed', 'opacity': 0.5}).click(false);
 
                 // Add warning notice to form
-                this.$form.before(this.getWarningHtml());
+                if ($(".grp-messagelist").length === 0) {
+                    $("#grp-content").prepend(
+                        "<ul class='grp-messagelist'></ul>"
+                    );
+                }
+                var messages = $(".grp-messagelist");
+                messages.append(this.getWarningHtml());
 
                 // Lookup who has the lock
                 self.lockedBy.setUp(data[0]['locked_by']);
