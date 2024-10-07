@@ -8,7 +8,7 @@ setup(
     license='BSD',
     description='Prevents users from overwriting each others changes in Django.',
     author='Josh West',
-    packages=find_packages(exclude=['tests']),
+    packages=find_packages(exclude=['tests', 'requirements']),
     include_package_data=True,
     zip_safe=False,
     keywords=['Django', 'admin', 'locking'],
