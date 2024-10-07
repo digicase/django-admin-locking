@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals, division
-
 __all__ = ('DEFAULT_DELETE_TIMEOUT_SECONDS', 'DEFAULT_EXPIRATION_SECONDS',
            'DEFAULT_PING_SECONDS', 'DEFAULT_SHARE_ADMIN_JQUERY')
 

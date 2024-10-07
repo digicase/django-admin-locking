@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals, division
-
 import json
 import types
 
@@ -23,18 +21,18 @@ class LockingValidationError(forms.ValidationError):
     def __init__(self, lock, action):
         locked_by = lock.locked_by
         if locked_by.first_name and locked_by.last_name:
-            locked_by_name = '%s %s' % (locked_by.first_name, locked_by.last_name)
+            locked_by_name = '{} {}'.format(locked_by.first_name, locked_by.last_name)
         else:
             locked_by_name = locked_by.username
-        super(LockingValidationError, self).__init__(
+        super().__init__(
             self.msg.format(action=action, name=locked_by_name, email=locked_by.email))
 
 
-class LockingAdminMixin(object):
+class LockingAdminMixin:
 
     def __init__(self, *args, **kwargs):
         """Appends the "is_locked" column to this admin's list_display"""
-        super(LockingAdminMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         if 'is_locked' not in self.list_display:
             if hasattr(self.list_display, 'append'):
                 self.list_display.append('is_locked', )
@@ -46,7 +44,7 @@ class LockingAdminMixin(object):
 
     @property
     def media(self):
-        media = super(LockingAdminMixin, self).media + forms.Media(
+        media = super().media + forms.Media(
             js=('admin/js/jquery.init.js',
                 'locking/js/locking.js',
                 'locking/js/locking.admin.js',
@@ -58,7 +56,7 @@ class LockingAdminMixin(object):
         return media
 
     def get_list_display_links(self, *args, **kwargs):
-        links = super(LockingAdminMixin, self).get_list_display_links(*args, **kwargs)
+        links = super().get_list_display_links(*args, **kwargs)
         if not links:
             return ('is_locked', )
         elif isinstance(links, list):
@@ -72,7 +70,7 @@ class LockingAdminMixin(object):
         The forms clean method will now raise a validation error if the form
         is locked by someone else.
         """
-        form = super(LockingAdminMixin, self).get_form(request, obj, **kwargs)
+        form = super().get_form(request, obj, **kwargs)
         if request.method == 'POST' and obj and Lock.is_locked(obj, for_user=request.user):
             lock = Lock.objects.for_object(obj)[0]
 
@@ -84,7 +82,7 @@ class LockingAdminMixin(object):
     def has_delete_permission(self, request, obj=None):
         if obj and Lock.is_locked(obj, for_user=request.user):
             return False
-        return super(LockingAdminMixin, self).has_delete_permission(request, obj)
+        return super().has_delete_permission(request, obj)
 
     def is_locked(self, obj):
         """List Display column to show lock status"""
@@ -103,7 +101,7 @@ class LockingAdminMixin(object):
 
     def get_urls(self):
         """Adds 'locking_admin_form_js' script to the available URLs"""
-        urls = super(LockingAdminMixin, self).get_urls()
+        urls = super().get_urls()
         locking_urls = [
             # URL For Locking admin form JavaScript
             url(r'^locking_form.%s_%s_(?P<object_id>[0-9]+).js$' % self._model_info,
@@ -183,5 +181,5 @@ class LockingAdminMixin(object):
                 self.locking_admin_form_js_url(obj.pk),
             ))
             context['media'] += locking_media
-        return super(LockingAdminMixin, self).render_change_form(
+        return super().render_change_form(
             request, context, add=add, obj=obj, **kwargs)

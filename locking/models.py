@@ -1,5 +1,3 @@
-from __future__ import absolute_import, unicode_literals, division
-
 from django.conf import settings
 from django.contrib.contenttypes.fields import GenericForeignKey
 from django.contrib.contenttypes.models import ContentType
@@ -12,7 +10,7 @@ from .settings import DEFAULT_EXPIRATION_SECONDS
 __all__ = ('Lock', )
 
 
-class QueryMixin(object):
+class QueryMixin:
     def unexpired(self):
         return self.filter(date_expires__gte=timezone.now())
 
@@ -97,14 +95,14 @@ class Lock(models.Model):
     class ObjectLockedError(Exception):
         def __init__(self, message, lock):
             self.lock = lock
-            super(Lock.ObjectLockedError, self).__init__(message)
+            super().__init__(message)
 
     def save(self, *args, **kwargs):
         "Save lock and renew expiration date"
-        self.id = "%s.%s" % (self.content_type_id, self.object_id)
+        self.id = "{}.{}".format(self.content_type_id, self.object_id)
         seconds = getattr(settings, 'LOCKING_EXPIRATION_SECONDS', DEFAULT_EXPIRATION_SECONDS)
         self.date_expires = timezone.now() + timezone.timedelta(seconds=seconds)
-        super(Lock, self).save(*args, **kwargs)
+        super().save(*args, **kwargs)
 
     def expire(self, seconds):
         "Set lock to expire in `seconds` from now"

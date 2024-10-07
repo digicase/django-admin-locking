@@ -1,6 +1,4 @@
-from __future__ import absolute_import, unicode_literals, division
-
-from collections import Iterable
+from collections.abc import Iterable
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
@@ -23,7 +21,7 @@ class LockingJsonResponse(JsonResponse):
             data = [d.to_dict() for d in data]
         else:
             data = data.to_dict()
-        super(LockingJsonResponse, self).__init__(data, encoder, safe, **kwargs)
+        super().__init__(data, encoder, safe, **kwargs)
 
 
 class LockAPIView(View):
@@ -35,7 +33,7 @@ class LockAPIView(View):
     def dispatch(self, request, app, model, object_id=None):
         model = model.lower()
         # if the usr can't change the object, they shouldn't be allowed to change the lock
-        may_change = '%s.change_%s' % (app, model)
+        may_change = '{}.change_{}'.format(app, model)
         if not request.user.has_perm(may_change):
             return HttpResponse(status=401)
 
@@ -47,7 +45,7 @@ class LockAPIView(View):
         if not object_id and request.method != 'GET':
             return HttpResponse(status=405)
 
-        return super(LockAPIView, self).dispatch(request, app, model, object_id)
+        return super().dispatch(request, app, model, object_id)
 
     def get(self, request, app, model, object_id=None):
         locks = (Lock.objects.filter(content_type=self.lock_ct_type)
