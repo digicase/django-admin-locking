@@ -1,0 +1,4 @@
+# Python and Django upgrade helpers
+# ------------------------------------------------------------------------------
+pyupgrade==3.17.0  # https://github.com/asottile/pyupgrade
+django-upgrade==1.21.0  # https://github.com/adamchainz/django-upgrade
