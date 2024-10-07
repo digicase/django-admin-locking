@@ -3,11 +3,11 @@ import types
 
 from django import forms
 from django.conf import settings
-from django.conf.urls import url
+from django.urls import re_path
 from django.urls import reverse
 from django.shortcuts import render
 from django.utils.safestring import mark_safe
-from django.utils.translation import ugettext as _
+from django.utils.translation import gettext as _
 
 from .models import Lock
 from .settings import DEFAULT_PING_SECONDS, DEFAULT_SHARE_ADMIN_JQUERY
@@ -104,12 +104,12 @@ class LockingAdminMixin:
         urls = super().get_urls()
         locking_urls = [
             # URL For Locking admin form JavaScript
-            url(r'^locking_form.%s_%s_(?P<object_id>[0-9]+).js$' % self._model_info,
+            re_path(r'^locking_form.%s_%s_(?P<object_id>[0-9]+).js$' % self._model_info,
                 self.admin_site.admin_view(self.locking_admin_form_js),
                 name=self.locking_admin_form_js_url_name),
 
             # URL For Locking admin changelist JavaScript
-            url(r'^locking_changelist.%s_%s.js$' % self._model_info,
+            re_path(r'^locking_changelist.%s_%s.js$' % self._model_info,
                 self.admin_site.admin_view(self.locking_admin_changelist_js),
                 name=self.locking_admin_changelist_js_url_name),
         ]

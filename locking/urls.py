@@ -1,13 +1,13 @@
-from django.conf.urls import url
+from django.urls import re_path
 
 from .api import LockAPIView
 
 __all__ = ('urlpatterns', )
 
 urlpatterns = [
-    url(r'api/lock/(?P<app>[\w-]+)/(?P<model>[\w-]+)/$',
+    re_path(r'api/lock/(?P<app>[\w-]+)/(?P<model>[\w-]+)/$',
         LockAPIView.as_view(), name='locking-api'),
 
-    url(r'api/lock/(?P<app>[\w-]+)/(?P<model>[\w-]+)/(?P<object_id>\d+)/$',
+    re_path(r'api/lock/(?P<app>[\w-]+)/(?P<model>[\w-]+)/(?P<object_id>\d+)/$',
         LockAPIView.as_view(), name='locking-api'),
 ]
